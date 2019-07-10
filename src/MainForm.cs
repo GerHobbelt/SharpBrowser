@@ -29,8 +29,8 @@ namespace SharpBrowser {
 
 		public static string Branding = "SharpBrowser";
 		public static string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36";
-		public static string HomepageURL = "https://www.google.com";
-		public static string NewTabURL = "about:blank";
+		public static string HomepageURL = ConfigurationManager.AppSettings["NewTabURL"]; //"https://www.google.com";
+		public static string NewTabURL = ConfigurationManager.AppSettings["NewTabURL"];//"about:blank";
 		public static string DownloadsURL = "sharpbrowser://storage/downloads.html";
 		public static string FileNotFoundURL = "sharpbrowser://storage/errors/notFound.html";
 		public static string CannotConnectURL = "sharpbrowser://storage/errors/cannotConnect.html";
@@ -61,15 +61,21 @@ namespace SharpBrowser {
 			InitTooltips(this.Controls);
 			InitHotkeys();
 
-		}
+            if (true)//ConfigurationManager.AppSettings["FullScree"] == "true")
+            {
+                PanelToolbar.Visible = false;
+                PanelStatus.Visible = false;
+                PanelSearch.Visible = false;
+            }
+        }
 
-		#region App Icon
+        #region App Icon
 
-		/// <summary>
-		/// embedding the resource using the Visual Studio designer results in a blurry icon.
-		/// the best way to get a non-blurry icon for Windows 7 apps.
-		/// </summary>
-		private void InitAppIcon() {
+        /// <summary>
+        /// embedding the resource using the Visual Studio designer results in a blurry icon.
+        /// the best way to get a non-blurry icon for Windows 7 apps.
+        /// </summary>
+        private void InitAppIcon() {
 			assembly = Assembly.GetAssembly(typeof(MainForm));
 			Icon = new Icon(GetResourceStream("sharpbrowser.ico"), new Size(64, 64));
 		}
@@ -92,28 +98,31 @@ namespace SharpBrowser {
 		/// </summary>
 		private void InitHotkeys() {
 
-			// browser hotkeys
-			KeyboardHandler.AddHotKey(this, CloseActiveTab, Keys.W, true);
-			KeyboardHandler.AddHotKey(this, CloseActiveTab, Keys.Escape, true);
-			KeyboardHandler.AddHotKey(this, AddBlankWindow, Keys.N, true);
-			KeyboardHandler.AddHotKey(this, AddBlankTab, Keys.T, true);
-			KeyboardHandler.AddHotKey(this, RefreshActiveTab, Keys.F5);
-			KeyboardHandler.AddHotKey(this, OpenDeveloperTools, Keys.F12);
-			KeyboardHandler.AddHotKey(this, NextTab, Keys.Tab, true);
-			KeyboardHandler.AddHotKey(this, PrevTab, Keys.Tab, true, true);
+            if (ConfigurationManager.AppSettings["DisableHotKeys"] != "true")
+            {
+                // browser hotkeys
+                KeyboardHandler.AddHotKey(this, CloseActiveTab, Keys.W, true);
+                KeyboardHandler.AddHotKey(this, CloseActiveTab, Keys.Escape, true);
+                KeyboardHandler.AddHotKey(this, AddBlankWindow, Keys.N, true);
+                KeyboardHandler.AddHotKey(this, AddBlankTab, Keys.T, true);
+                KeyboardHandler.AddHotKey(this, RefreshActiveTab, Keys.F5);
+                KeyboardHandler.AddHotKey(this, OpenDeveloperTools, Keys.F12);
+                KeyboardHandler.AddHotKey(this, NextTab, Keys.Tab, true);
+                KeyboardHandler.AddHotKey(this, PrevTab, Keys.Tab, true, true);
 
-			// search hotkeys
-			KeyboardHandler.AddHotKey(this, OpenSearch, Keys.F, true);
-			KeyboardHandler.AddHotKey(this, CloseSearch, Keys.Escape);
-			KeyboardHandler.AddHotKey(this, StopActiveTab, Keys.Escape);
+                // search hotkeys
+                KeyboardHandler.AddHotKey(this, OpenSearch, Keys.F, true);
+                KeyboardHandler.AddHotKey(this, CloseSearch, Keys.Escape);
+                KeyboardHandler.AddHotKey(this, StopActiveTab, Keys.Escape);
+            }
 
+            KeyboardHandler.AddHotKey(this, ToggleFullScreen, Keys.NumPad0, true, false, true);
+        }
 
-		}
-
-		/// <summary>
-		/// we activate all the tooltips stored in the Tag property of the buttons
-		/// </summary>
-		public void InitTooltips(System.Windows.Forms.Control.ControlCollection parent) {
+        /// <summary>
+        /// we activate all the tooltips stored in the Tag property of the buttons
+        /// </summary>
+        public void InitTooltips(System.Windows.Forms.Control.ControlCollection parent) {
 			foreach (Control ui in parent) {
 				Button btn = ui as Button;
 				if (btn != null) {
@@ -891,7 +900,41 @@ namespace SharpBrowser {
 			}
 		}
 
-		private void BtnClearSearch_Click(object sender, EventArgs e) {
+        private void ToggleFullScreen()
+        {
+            Screen screen = Screen.FromControl(this);
+
+            int hExtTop = 29;
+            int hExtBottom = 9;
+            int border = 1;
+
+            if (_bFullScreenMode == false)
+            {
+                FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Normal;
+                Left = screen.WorkingArea.Left - border;
+                Top = screen.WorkingArea.Top - hExtTop;
+                Width = screen.WorkingArea.Width + 2 * border;
+                Height = screen.WorkingArea.Height + hExtTop + border + hExtBottom;
+                _bFullScreenMode = true;
+            }
+            else
+            {
+                FormBorderStyle = FormBorderStyle.Sizable;
+                WindowState = FormWindowState.Minimized; //minimize ? FormWindowState.Minimized : FormWindowState.Maximized;
+                Left = screen.WorkingArea.Left;
+                Top = screen.WorkingArea.Top;
+                Width = 250;
+                Height = 200;
+                _bFullScreenMode = false;
+            }
+
+            //webControl1.outputLabel.Visible = !_bFullScreenMode;
+            //webControl2.outputLabel.Visible = !_bFullScreenMode;
+        }
+        private bool _bFullScreenMode;
+
+        private void BtnClearSearch_Click(object sender, EventArgs e) {
 			CloseSearch();
 		}
 
@@ -927,9 +970,6 @@ namespace SharpBrowser {
 		}
 
 		#endregion
-
-
-
 	}
 }
 
