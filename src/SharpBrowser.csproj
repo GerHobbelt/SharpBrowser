@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\CefSharp\packages\Microsoft.Build.Locator.1.2.6\build\Microsoft.Build.Locator.props" Condition="Exists('..\..\CefSharp\packages\Microsoft.Build.Locator.1.2.6\build\Microsoft.Build.Locator.props')" />
   <Import Project="packages\Microsoft.Build.Locator.1.2.2\build\Microsoft.Build.Locator.props" Condition="Exists('packages\Microsoft.Build.Locator.1.2.2\build\Microsoft.Build.Locator.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -109,6 +110,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -119,7 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Locator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9dff12846e04bfbd, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.Build.Locator.1.2.2\lib\net46\Microsoft.Build.Locator.dll</HintPath>
+      <HintPath>..\..\CefSharp\packages\Microsoft.Build.Locator.1.2.6\lib\net46\Microsoft.Build.Locator.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -146,6 +148,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Microsoft.Build.Locator.1.2.2\build\Microsoft.Build.Locator.targets" Condition="Exists('packages\Microsoft.Build.Locator.1.2.2\build\Microsoft.Build.Locator.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\CefSharp\packages\Microsoft.Build.Locator.1.2.6\build\Microsoft.Build.Locator.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\CefSharp\packages\Microsoft.Build.Locator.1.2.6\build\Microsoft.Build.Locator.props'))" />
+    <Error Condition="!Exists('..\..\CefSharp\packages\Microsoft.Build.Locator.1.2.6\build\Microsoft.Build.Locator.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\CefSharp\packages\Microsoft.Build.Locator.1.2.6\build\Microsoft.Build.Locator.targets'))" />
+  </Target>
+  <Import Project="..\..\CefSharp\packages\Microsoft.Build.Locator.1.2.6\build\Microsoft.Build.Locator.targets" Condition="Exists('..\..\CefSharp\packages\Microsoft.Build.Locator.1.2.6\build\Microsoft.Build.Locator.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
