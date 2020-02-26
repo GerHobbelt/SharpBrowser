@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpBrowser", "SharpBrowser.csproj", "{703472B8-B275-4F3F-95B6-426036F8462E}"
 EndProject
@@ -13,16 +13,19 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{703472B8-B275-4F3F-95B6-426036F8462E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{703472B8-B275-4F3F-95B6-426036F8462E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{703472B8-B275-4F3F-95B6-426036F8462E}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{703472B8-B275-4F3F-95B6-426036F8462E}.Debug|Any CPU.Build.0 = Debug|x86
 		{703472B8-B275-4F3F-95B6-426036F8462E}.Debug|x86.ActiveCfg = Debug|x86
 		{703472B8-B275-4F3F-95B6-426036F8462E}.Debug|x86.Build.0 = Debug|x86
-		{703472B8-B275-4F3F-95B6-426036F8462E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{703472B8-B275-4F3F-95B6-426036F8462E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{703472B8-B275-4F3F-95B6-426036F8462E}.Release|Any CPU.ActiveCfg = Release|x86
+		{703472B8-B275-4F3F-95B6-426036F8462E}.Release|Any CPU.Build.0 = Release|x86
 		{703472B8-B275-4F3F-95B6-426036F8462E}.Release|x86.ActiveCfg = Release|x86
 		{703472B8-B275-4F3F-95B6-426036F8462E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {16E1D0A9-B240-4A61-B6B8-0AC77ED1422D}
 	EndGlobalSection
 EndGlobal
