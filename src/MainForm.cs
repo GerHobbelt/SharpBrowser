@@ -393,7 +393,9 @@ namespace SharpBrowser {
 			tabStrip.Tag = tab;
 
 			if (url.StartsWith("sharpbrowser:")) {
-				browser.RegisterAsyncJsObject("host", host);
+				// https://github.com/cefsharp/CefSharp/issues/2990 :: browser.RegisterAsyncJsObject("host", host);
+				CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+				browser.JavascriptObjectRepository.Register("host", host, isAsync: true, options: BindingOptions.DefaultBinder);
 			}
 			return tab;
 		}
