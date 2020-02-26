@@ -125,7 +125,7 @@ namespace SharpBrowser {
 			if (tab != null && tab.RefererURL != null) {
 
 				// Set referer
-				request.SetReferrer(tab.RefererURL, ReferrerPolicy.Always);
+				request.SetReferrer(tab.RefererURL, ReferrerPolicy.ClearReferrerOnTransitionFromSecureToInsecure);
 
 			}
 
