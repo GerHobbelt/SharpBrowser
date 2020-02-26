@@ -9,7 +9,6 @@ using System.Linq;
 using System.Web;
 using CefSharp;
 using CefSharp.WinForms;
-using FarsiLibrary.Win;
 using Timer = System.Windows.Forms.Timer;
 using System.Drawing;
 using System.Reflection;
@@ -144,8 +143,8 @@ namespace SharpBrowser {
 
 		#region Web Browser & Tabs
 
-		private FATabStripItem newStrip;
-		private FATabStripItem downloadsStrip;
+		//private FATabStripItem newStrip;
+		//private FATabStripItem downloadsStrip;
 
 		private string currentFullURL;
 		private string currentCleanURL;
@@ -441,7 +440,7 @@ namespace SharpBrowser {
 			
 		}
 
-		private void OnTabClosing(FarsiLibrary.Win.TabStripItemClosingEventArgs e) {
+		private void OnTabClosing(ItemClosingEventArgs e) {
 
 			// exit if invalid tab
 			if (CurTab == null){
@@ -636,7 +635,7 @@ namespace SharpBrowser {
 			InvokeIfNeeded(() => BtnForward.Enabled = canGoForward);
 		}
 
-		private void OnTabsChanged(TabStripItemChangedEventArgs e) {
+		private void OnTabsChanged(ItemChangedEventArgs e) {
 
 
 			ChromiumWebBrowser browser = null;
@@ -992,7 +991,7 @@ internal class SharpTab {
 
 	public DateTime DateCreated;
 
-	public FATabStripItem Tab;
+	//public FATabStripItem Tab;
 	public ChromiumWebBrowser Browser;
 
 }
