@@ -11,7 +11,7 @@ using CefSharp.Callback;
 
 namespace SharpBrowser {
 	internal class ResourceRequestHandler : IResourceRequestHandler {
-		MainForm myForm;
+		readonly MainForm myForm;
 		public ResourceRequestHandler(MainForm form) {
 			myForm = form;
 		}
@@ -191,6 +191,11 @@ namespace SharpBrowser {
 		public void OnResourceLoadComplete(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, IResponse response, UrlRequestStatus status, long receivedContentLength) {
 
 			int code = response.StatusCode;
+
+			// exit if frame is invalid (if the frame has closed, for example)
+			if (!frame.IsValid) {
+				return;
+			}
 
 
 			// if NOT FOUND

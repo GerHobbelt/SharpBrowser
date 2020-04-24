@@ -27,9 +27,11 @@ namespace SharpBrowser {
 		public static MainForm Instance;
 
 		public static string Branding = "SharpBrowser";
-		public static string UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36";
+		public static string UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36";
+		public static string AcceptLanguage = "en-US,en;q=0.9";
 		public static string HomepageURL = ConfigurationManager.AppSettings["NewTabURL"]; //"https://www.google.com";
 		public static string NewTabURL = ConfigurationManager.AppSettings["NewTabURL"];//"about:blank";
+		public static string InternalURL = "sharpbrowser";
 		public static string DownloadsURL = "sharpbrowser://storage/downloads.html";
 		public static string FileNotFoundURL = "sharpbrowser://storage/errors/notFound.html";
 		public static string CannotConnectURL = "sharpbrowser://storage/errors/cannotConnect.html";
@@ -163,15 +165,17 @@ namespace SharpBrowser {
 		private void InitBrowser() {
 
 			CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+			CefSharpSettings.WcfEnabled = false;
 
 			CefSettings settings = new CefSettings();
 
 			settings.RegisterScheme(new CefCustomScheme {
-				SchemeName = "sharpbrowser",
+				SchemeName = InternalURL,
 				SchemeHandlerFactory = new SchemeHandlerFactory()
 			});
 
 			settings.UserAgent = UserAgent;
+			settings.AcceptLanguageList = AcceptLanguage;
 
 			settings.IgnoreCertificateErrors = true;
 			
@@ -241,11 +245,11 @@ namespace SharpBrowser {
 
 				Uri.TryCreate(url, UriKind.Absolute, out outUri);
 
-				if (!(urlLower.StartsWith("http") || urlLower.StartsWith("sharpbrowser"))) {
+				if (!(urlLower.StartsWith("http") || urlLower.StartsWith(InternalURL))) {
 					if (outUri == null || outUri.Scheme != Uri.UriSchemeFile) newUrl = "http://" + url;
 				}
 
-				if (urlLower.StartsWith("sharpbrowser:") ||
+				if (urlLower.StartsWith(InternalURL + ":") ||
 
 					// load URL if it seems valid
 					(Uri.TryCreate(newUrl, UriKind.Absolute, out outUri)
@@ -314,7 +318,7 @@ namespace SharpBrowser {
 			return (url == "" || url == "about:blank");
 		}
 		private bool IsBlankOrSystem(string url) {
-			return (url == "" || url.BeginsWith("about:") || url.BeginsWith("chrome:") || url.BeginsWith("sharpbrowser:"));
+			return (url == "" || url.BeginsWith("about:") || url.BeginsWith("chrome:") || url.BeginsWith(InternalURL + ":"));
 		}
 
 		public void AddBlankWindow() {
@@ -400,7 +404,7 @@ namespace SharpBrowser {
 			// save tab obj in tabstrip
 			tabStrip.Tag = tab;
 
-			if (url.StartsWith("sharpbrowser:")) {
+			if (url.StartsWith(InternalURL + ":")) {
 				// https://github.com/cefsharp/CefSharp/issues/2990 :: browser.RegisterAsyncJsObject("host", host);
 				CefSharpSettings.LegacyJavascriptBindingEnabled = true;
 				browser.JavascriptObjectRepository.Register("host", host, isAsync: true, options: BindingOptions.DefaultBinder);
@@ -834,15 +838,7 @@ namespace SharpBrowser {
 		}
 
 		public string CalcDownloadPath(DownloadItem item) {
-
-			string itemName = item.SuggestedFileName != null ? item.SuggestedFileName.GetAfterLast(".") + " file" : "downloads";
-
-			string path = null;
-			if (path != null) {
-				return path;
-			}
-
-			return null;
+			return item.SuggestedFileName;
 		}
 
 		public bool DownloadsInProgress() {
