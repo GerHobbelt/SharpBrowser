@@ -41,8 +41,8 @@ namespace SharpBrowser {
 		public bool CrossDomainSecurity = true;
 		public bool WebGL = true;
 		public bool ApplicationCache = true;
-
-
+		public List<Thread> threads = new List<Thread>();
+		
 
 		public MainForm() {
 
@@ -53,6 +53,7 @@ namespace SharpBrowser {
 			InitBrowser();
 
 			SetFormTitle(null);
+
 
 		}
 
@@ -783,6 +784,10 @@ namespace SharpBrowser {
 			if (DownloadsInProgress()) {
 				if (MessageBox.Show("Downloads are in progress. Cancel those and exit?", "Confirm exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) {
 					e.Cancel = true;
+					foreach (var thread in threads)
+					{
+						Thread.CurrentThread.Abort(thread);
+					}
 					return;
 				}
 			}
@@ -793,7 +798,9 @@ namespace SharpBrowser {
 					ChromiumWebBrowser browser = (ChromiumWebBrowser)tab.Controls[0];
 					browser.Dispose();
 				}
-			} catch (System.Exception ex) { }
+			} catch (System.Exception ex) {
+				//Add Logging?
+			}
 
 		}
 
@@ -859,7 +866,13 @@ namespace SharpBrowser {
 
 		public void OpenDownloadsTab() {
 			if (downloadsStrip != null && ((ChromiumWebBrowser)downloadsStrip.Controls[0]).Address == DownloadsURL) {
-				TabPages.SelectedItem = downloadsStrip;
+				try
+				{
+					TabPages.SelectedItem = downloadsStrip;
+				}
+				catch(Exception ex) { 
+					//Add Logging
+				}
 			} else {
 				ChromiumWebBrowser brw = AddNewBrowserTab(DownloadsURL);
 				downloadsStrip = (FATabStripItem)brw.Parent;
@@ -968,8 +981,17 @@ namespace SharpBrowser {
 			}
 		}
 
-		#endregion
-	}
+
+
+        #endregion
+
+        #region Home Button
+        private void BtnHome_Click(object sender, EventArgs e)
+        {
+			CurBrowser.Load(HomepageURL);
+        }
+        #endregion
+    }
 }
 
 /// <summary>

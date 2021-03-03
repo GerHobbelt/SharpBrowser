@@ -1,4 +1,7 @@
 ﻿using CefSharp;
+using System.Collections.Generic;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace SharpBrowser {
 	internal class DownloadHandler : IDownloadHandler {
@@ -7,7 +10,7 @@ namespace SharpBrowser {
 		public DownloadHandler(MainForm form) {
 			myForm = form;
 		}
-
+		
 		public void OnBeforeDownload(IWebBrowser webBrowser, IBrowser browser, DownloadItem item, IBeforeDownloadCallback callback) {
 			if (!callback.IsDisposed) {
 				using (callback) {
@@ -28,12 +31,25 @@ namespace SharpBrowser {
 
 						// open the downloads tab
 						myForm.OpenDownloadsTab();
-						callback.Continue(path, true);
+						Thread th = new Thread(()=> ContinueDownload(path, callback));
+						myForm.threads.Add(th);
 					}
 
 				}
 			}
 		}
+
+		public void ContinueDownload(string path, IBeforeDownloadCallback callback)
+        {
+			SaveFileDialog sf = new SaveFileDialog();
+			sf.FileName = path;
+			sf.Title = path;
+			sf.InitialDirectory = "./";
+			if(sf.ShowDialog() == DialogResult.OK)
+            {
+				callback.Continue(path, false);
+            }
+        }
 
 		public void OnDownloadUpdated(IWebBrowser webBrowser, IBrowser browser, DownloadItem downloadItem, IDownloadItemCallback callback) {
 			myForm.UpdateDownloadItem(downloadItem);

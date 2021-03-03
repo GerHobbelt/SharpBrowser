@@ -25,7 +25,7 @@ namespace SharpBrowser {
 		// TOP LEVEL API
 
 		public static MemoryStream GetFileIcon(string name, FileIconSize size) {
-			Icon icon = FileIconUtils.IconFromExtension(name.GetAfter("."), size);
+			Icon icon = FileIconUtils.IconFromExtension(name.GetAfterLast("."), size);
 			using (icon) {
 				using (var bmp = icon.ToBitmap()) {
 					MemoryStream ms = new MemoryStream();
